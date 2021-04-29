@@ -30,6 +30,16 @@ class ScanDownsampler:
         marker.scale.x = self.scale
         marker.scale.y = self.scale
         marker.scale.z = self.scale
+
+        data.ranges = list(data.ranges)
+        for i in range(0,len(data.ranges)):
+            if i % self.n != 0 or np.cos(angle) < 0:
+                data.ranges[i] = np.Infinity
+
+            angle += data.angle_increment
+
+            
+        angle = 0
         for i in range(0,len(data.ranges), self.n):
             if np.abs(data.ranges[i]) < 20.0:
                 
@@ -41,14 +51,6 @@ class ScanDownsampler:
 
 
             angle += self.n * data.angle_increment
-            
-        data.ranges = list(data.ranges)
-        angle = 0
-        for i in range(0,len(data.ranges)):
-            if i % self.n != 0 or np.cos(angle) < 0:
-                data.ranges[i] = np.Infinity
-
-            angle += data.angle_increment
             
         marker.type = marker.POINTS
         marker.color.a = 1.0
